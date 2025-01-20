@@ -1,6 +1,7 @@
 package org.phonepe.assignment.service.order;
 
 import org.phonepe.assignment.dao.OrdersDataBaseI;
+import org.phonepe.assignment.exception.InvalidOrderOperationException;
 import org.phonepe.assignment.model.Order;
 import org.phonepe.assignment.model.OrderStatus;
 
@@ -12,35 +13,57 @@ Date: 20-01-2025
 */
 public class OrderOperationsService implements OrderOperationsServiceI {
 
-    OrdersDataBaseI ordersDataBase;
+    private final OrdersDataBaseI ordersDB;
 
     public OrderOperationsService(OrdersDataBaseI ordersDataBase) {
-         this.ordersDataBase = ordersDataBase;
+         this.ordersDB = ordersDataBase;
     }
 
     @Override
-    public boolean placeOrder(Order order) {
-        boolean orderPlacementResult=false;
+    public void placeOrder(Order order) {
 
-        synchronized (ordersDataBase) {
-            order.setOrderStatus(OrderStatus.ACCEPTED);
-            ordersDataBase.addOrder(order);
-            orderPlacementResult = true;
+        synchronized (ordersDB) {
+            ordersDB.addOrder(order);
         }
-
-        return orderPlacementResult;
     }
 
     @Override
     public Order orderStatus(UUID orderID) {
-        synchronized (ordersDataBase) {
-            return ordersDataBase.getOrder(orderID);
+        synchronized (ordersDB) {
+            return ordersDB.getOrder(orderID);
         }
     }
 
-    private Order getDummyOrder(UUID orderID) {
-        Order order = new Order();
-        order.setOrderId(orderID);
-        return order;
+    @Override
+    public void modifyOrder(Order newOrder) {
+        synchronized (ordersDB) {
+            Order oldOrder = orderStatus(newOrder.getOrderId());
+
+            if (oldOrder == null) {
+                placeOrder(newOrder);
+            } else {
+                if (oldOrder.getOrderStatus() != OrderStatus.COMPLETED) {
+                    ordersDB.deleteOrder(oldOrder);
+                    ordersDB.addOrder(newOrder);
+                } else {
+                    throw new InvalidOrderOperationException("Order has already completed");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void cancelOrder(UUID orderID) {
+        synchronized (ordersDB) {
+            Order order = orderStatus(orderID);
+
+            if (order != null) {
+                if (order.getOrderStatus() != OrderStatus.COMPLETED) {
+                    ordersDB.cancelOrderExecution(order);
+                } else {
+                    throw new InvalidOrderOperationException("Order has already completed");
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,127 @@
+package org.phonepe.assignment.dao;
+
+import lombok.NonNull;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.phonepe.assignment.model.*;
+import java.util.*;
+
+/*
+Name: Himanshu Bhardwaj
+Date: 20-01-2025
+*/
+@Slf4j
+@ToString
+public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
+    private final ArrayList<Trades> trades;
+    private final TreeMap<UUID, Order> allOrders;
+    private final TreeMap<StockSymbol,TreeSet<Order>> unExecutedOrders;
+
+    public InMemoryOrdersDBRepo() {
+        this.unExecutedOrders = new TreeMap<>();
+        this.allOrders = new TreeMap<>();
+        this.trades = new ArrayList<>();
+    }
+
+    @Override
+    public void addOrder(Order order) {
+        order.setOrderStatus(OrderStatus.ACCEPTED);
+        addStockSymbol(order.getStockSymbol());
+        unExecutedOrders.get(order.getStockSymbol()).add(order);
+        allOrders.put(order.getOrderId(),order);
+    }
+
+    @Override
+    public Order getOrder(UUID orderID) {
+        return allOrders.get(orderID);
+    }
+
+    @Override
+    public List<StockSymbol> getAllStockSymbol() {
+        return new ArrayList<>(unExecutedOrders.keySet());
+    }
+
+    @Override
+    public List<Order> getSellOrders(StockSymbol stockSymbol) {
+        return getOrderByType(stockSymbol,OrderType.SELL);
+    }
+
+    @Override
+    public List<Order> getBuyOrders(StockSymbol stockSymbol) {
+        return getOrderByType(stockSymbol,OrderType.BUY);
+    }
+
+    @Override
+    public void executeOrders(Order order) {
+        order.setOrderStatus(OrderStatus.COMPLETED);
+        unExecutedOrders.get(order.getStockSymbol()).remove(order);
+    }
+
+    @Override
+    public void printDBSummary() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("StockDatabaseDump:\n");
+        sb.append(String.format("All Orders: %d\t",allOrders.size()));
+        sb.append("unExecutedOrders: ");
+
+        int unExecutedOrderCount=0;
+
+        for (Map.Entry<StockSymbol, TreeSet<Order>> entry: unExecutedOrders.entrySet()) {
+            for (Order o: entry.getValue()) {
+                unExecutedOrderCount++;
+            }
+        }
+
+        sb.append(String.format("%d\t",unExecutedOrderCount));
+
+        sb.append(String.format("\tTrades: %d",trades.size())) ;
+        log.info(sb.toString());
+    }
+
+    @Override
+    public void deleteOrder(Order order) {
+        allOrders.remove(order.getOrderId());
+        cancelOrderExecution(order);
+    }
+
+    @Override
+    public void cancelOrderExecution(Order order) {
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        unExecutedOrders.get(order.getStockSymbol()).remove(order);
+    }
+
+    @Override
+    public void createOrderTrade(UUID tradeId, @NonNull UUID buyerId, @NonNull UUID sellerId, StockSymbol stockSymbol, double quantity, double price, long tradeTimeStamp) {
+        this.trades.add(new Trades(tradeId,null, buyerId, sellerId,stockSymbol,quantity,price,tradeTimeStamp));
+    }
+
+    private void addStockSymbol(StockSymbol stockSymbol) {
+        if (!unExecutedOrders.containsKey(stockSymbol)) {
+            unExecutedOrders.put(stockSymbol,new TreeSet<>());
+        }
+    }
+
+    private  Comparator<Order> getOrderSortByTimeComparator() {
+        return new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return Long.compare(o1.getOrderAcceptedTimeStamp(), o2.getOrderAcceptedTimeStamp());
+            }
+        };
+    }
+
+    private List<Order> getOrderByType(StockSymbol stockSymbol, OrderType orderType) {
+        ArrayList<Order> sellOrders = new ArrayList<>();
+
+        for (Order order: unExecutedOrders.get(stockSymbol)) {
+            if (order.getOrderType()==orderType) {
+                sellOrders.add(order);
+            }
+        }
+
+        sellOrders.sort(getOrderSortByTimeComparator());
+
+        return sellOrders;
+    }
+
+}

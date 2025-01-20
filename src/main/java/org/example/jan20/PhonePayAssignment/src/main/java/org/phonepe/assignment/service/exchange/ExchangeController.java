@@ -15,34 +15,44 @@ Date: 20-01-2025
 */
 public class ExchangeController implements ExchangeControllerI {
 
-    UserServiceI userService;
-    OrderOperationsServiceI orderProducerService;
-    OrderConsumerServiceI orderConsumerService;
+    private final UserServiceI userService;
+    private final OrderOperationsServiceI orderOperationsService;
 
     public ExchangeController(UserServiceI userServiceI, OrderOperationsServiceI orderServiceI, OrderConsumerServiceI orderConsumerService) {
         this.userService = userServiceI;
-        this.orderProducerService = orderServiceI;
-        this.orderConsumerService = orderConsumerService;
+        this.orderOperationsService = orderServiceI;
         orderConsumerService.executeOrders();
     }
 
     @Override
-    public boolean placeOrder(Order orders) {
+    public void placeOrder(Order orders) {
         validateUser(orders.getUserId());
-        return orderProducerService.placeOrder(orders);
+        orderOperationsService.placeOrder(orders);
     }
 
     @Override
-    public Order orderStatus(UUID uuid, UUID orderID) {
-        validateUser(uuid);
+    public Order orderStatus(UUID userID, UUID orderID) {
+        validateUser(userID);
 
-        Order order = orderProducerService.orderStatus(orderID);
+        Order order = orderOperationsService.orderStatus(orderID);
 
-        if (order.getUserId().equals(uuid)) {
+        if (order.getUserId().equals(userID)) {
             return order;
         } else {
             throw new OrderAccessDeniedException("User is not allowed to access this order");
         }
+    }
+
+    @Override
+    public void modifyOrder(Order newOrder) {
+        validateUser(newOrder.getUserId());
+        orderOperationsService.modifyOrder(newOrder);
+    }
+
+    @Override
+    public void cancelOrder(UUID orderID, UUID userId) {
+        validateUser(userId);
+        orderOperationsService.cancelOrder(orderID);
     }
 
     private void validateUser(UUID userID) {

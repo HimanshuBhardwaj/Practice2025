@@ -5,6 +5,7 @@ import org.phonepe.assignment.model.Order;
 import org.phonepe.assignment.model.OrderStatus;
 import org.phonepe.assignment.model.StockSymbol;
 import java.util.List;
+import java.util.UUID;
 
 /*
 Name: Himanshu Bhardwaj
@@ -27,8 +28,7 @@ public class OrderConsumer implements Runnable{
                 throw new RuntimeException(e);
             }
 
-            System.out.println("StockDatabaseDump: ");
-            ordersDB.printDB();
+            ordersDB.printDBSummary();
 
             synchronized (ordersDB) {
                 for (StockSymbol stockSymbol: ordersDB.getAllStockSymbol()) {
@@ -40,6 +40,7 @@ public class OrderConsumer implements Runnable{
                             if (buyOrder.getOrderStatus() != OrderStatus.COMPLETED
                                     && sellOrder.getPrice()<=buyOrder.getPrice()
                                     && sellOrder.getQuantity()==buyOrder.getQuantity()) {
+                                ordersDB.createOrderTrade(UUID.randomUUID(),buyOrder.getUserId(),sellOrder.getUserId(),buyOrder.getStockSymbol(),buyOrder.getQuantity(),buyOrder.getPrice(), System.currentTimeMillis());
                                 ordersDB.executeOrders(buyOrder);
                                 ordersDB.executeOrders(sellOrder);
                                 break;

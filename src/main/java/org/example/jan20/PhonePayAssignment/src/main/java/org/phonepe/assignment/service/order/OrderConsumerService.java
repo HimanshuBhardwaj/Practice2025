@@ -7,7 +7,7 @@ Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
 public class OrderConsumerService implements OrderConsumerServiceI {
-    private OrdersDataBaseI ordersDataBase;
+    private final OrdersDataBaseI ordersDataBase;
 
     public OrderConsumerService(OrdersDataBaseI ordersDataBase) {
         this.ordersDataBase = ordersDataBase;

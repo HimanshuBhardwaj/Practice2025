@@ -12,4 +12,5 @@ public interface ExchangeControllerI {
     Order orderStatus(UUID userID, UUID orderID );
     void modifyOrder(Order newOrder);
     void cancelOrder(UUID orderID,UUID userId);
+    void logDBState();
 }

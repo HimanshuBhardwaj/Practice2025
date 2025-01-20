@@ -1,5 +1,6 @@
 package org.phonepe.assignment.service.order;
 
+import lombok.SneakyThrows;
 import org.phonepe.assignment.dao.OrdersDataBaseI;
 import org.phonepe.assignment.model.Order;
 import org.phonepe.assignment.model.OrderStatus;
@@ -18,18 +19,12 @@ public class OrderConsumer implements Runnable{
         this.ordersDB = ordersDataBase;
     }
 
+    @SneakyThrows
     @Override
     public void run() {
 
         while (!Thread.currentThread().isInterrupted()) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            ordersDB.printDBSummary();
-
+            addExecutionLag();
             synchronized (ordersDB) {
                 for (StockSymbol stockSymbol: ordersDB.getAllStockSymbol()) {
                     List<Order> sellOrders = ordersDB.getSellOrders(stockSymbol);
@@ -50,5 +45,9 @@ public class OrderConsumer implements Runnable{
                 }
             }
         }
+    }
+
+    private void addExecutionLag() throws InterruptedException {
+        Thread.sleep(2000);
     }
 }

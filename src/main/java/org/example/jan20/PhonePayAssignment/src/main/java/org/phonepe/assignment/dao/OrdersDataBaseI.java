@@ -1,6 +1,5 @@
 package org.phonepe.assignment.dao;
 
-import lombok.NonNull;
 import org.phonepe.assignment.model.Order;
 import org.phonepe.assignment.model.StockSymbol;
 import java.util.List;
@@ -17,7 +16,7 @@ public interface OrdersDataBaseI {
     List<Order> getSellOrders(StockSymbol stockSymbol);
     List<StockSymbol> getAllStockSymbol();
     Order getOrder(UUID orderID);
-    void printDBSummary();
+    void logDBSummary();
     void deleteOrder(Order oldOrder);
     void cancelOrderExecution(Order order);
     void createOrderTrade(UUID uuid, UUID buyerId, UUID sellerId, StockSymbol stockSymbol, double quantity, double price, long tradeTimeStamp);

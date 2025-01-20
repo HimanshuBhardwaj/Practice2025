@@ -36,7 +36,7 @@ public class ExchangeController implements ExchangeControllerI {
 
         Order order = orderOperationsService.orderStatus(orderID);
 
-        if (order.getUserId().equals(userID)) {
+        if (order!= null && order.getUserId().equals(userID)) {
             return order;
         } else {
             throw new OrderAccessDeniedException("User is not allowed to access this order");
@@ -53,6 +53,11 @@ public class ExchangeController implements ExchangeControllerI {
     public void cancelOrder(UUID orderID, UUID userId) {
         validateUser(userId);
         orderOperationsService.cancelOrder(orderID);
+    }
+
+    @Override
+    public void logDBState() {
+        orderOperationsService.logDBState();
     }
 
     private void validateUser(UUID userID) {

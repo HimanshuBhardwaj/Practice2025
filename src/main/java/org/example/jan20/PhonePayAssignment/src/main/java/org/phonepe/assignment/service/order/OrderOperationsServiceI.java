@@ -12,4 +12,5 @@ public interface OrderOperationsServiceI {
     Order orderStatus(UUID orderID );
     void modifyOrder(Order newOrder);
     void cancelOrder(UUID orderID);
+    void logDBState();
 }

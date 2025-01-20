@@ -58,7 +58,7 @@ public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
     }
 
     @Override
-    public void printDBSummary() {
+    public void logDBSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("StockDatabaseDump:\n");
         sb.append(String.format("All Orders: %d\t",allOrders.size()));

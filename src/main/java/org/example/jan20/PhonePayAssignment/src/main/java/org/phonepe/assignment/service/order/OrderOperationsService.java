@@ -66,4 +66,9 @@ public class OrderOperationsService implements OrderOperationsServiceI {
             }
         }
     }
+
+    @Override
+    public void logDBState() {
+        ordersDB.logDBSummary();
+    }
 }

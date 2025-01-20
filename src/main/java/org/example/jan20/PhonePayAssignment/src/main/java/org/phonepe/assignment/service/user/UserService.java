@@ -1,12 +1,13 @@
-package org.phonepay.assignment.service.user;
+package org.phonepe.assignment.service.user;
 
-import org.phonepay.assignment.exception.UserLoadException;
-import org.phonepay.assignment.model.User;
+import lombok.NonNull;
+import org.phonepe.assignment.exception.UserLoadException;
+import org.phonepe.assignment.model.User;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ public class UserService implements UserServiceI {
     TreeSet<User> users;
 
     public UserService() {
-        users.addAll(loadUsersFromFile("UserData"));
+        users = loadUsersData("/UserData.txt",",");
     }
 
     @Override
@@ -34,12 +35,14 @@ public class UserService implements UserServiceI {
     }
 
     // Method to load users from a CSV file
-    private TreeSet<User> loadUsersFromFile(String filePath) throws UserLoadException {
+    private TreeSet<User> loadUsersData(@NonNull String fileName, String columnSeprator) throws UserLoadException {
         TreeSet<User> users = new TreeSet<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                Objects.requireNonNull(this.getClass().getResourceAsStream(fileName)), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
+                String[] fields = line.split(columnSeprator);
                 UUID id = UUID.fromString(fields[0]);
                 String name = fields[1];
                 String phoneNumber = fields[2];
@@ -49,6 +52,7 @@ public class UserService implements UserServiceI {
         } catch (Exception e) {
             throw new UserLoadException(e.getMessage());
         }
+
         return users;
     }
 }

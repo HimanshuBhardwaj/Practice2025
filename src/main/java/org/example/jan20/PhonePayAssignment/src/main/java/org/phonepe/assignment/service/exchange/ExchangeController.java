@@ -1,11 +1,11 @@
-package org.phonepay.assignment.service.exchange;
+package org.phonepe.assignment.service.exchange;
 
-import org.phonepay.assignment.exception.InvalidUser;
-import org.phonepay.assignment.exception.OrderAccessDeniedException;
-import org.phonepay.assignment.model.Order;
-import org.phonepay.assignment.service.order.OrderConsumerServiceI;
-import org.phonepay.assignment.service.order.OrderProducerServiceI;
-import org.phonepay.assignment.service.user.UserServiceI;
+import org.phonepe.assignment.exception.InvalidUser;
+import org.phonepe.assignment.exception.OrderAccessDeniedException;
+import org.phonepe.assignment.model.Order;
+import org.phonepe.assignment.service.order.OrderConsumerServiceI;
+import org.phonepe.assignment.service.order.OrderOperationsServiceI;
+import org.phonepe.assignment.service.user.UserServiceI;
 import java.util.UUID;
 
 
@@ -13,13 +13,13 @@ import java.util.UUID;
 Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
-public class ExchangeService implements ExchangeServiceI{
+public class ExchangeController implements ExchangeControllerI {
 
     UserServiceI userService;
-    OrderProducerServiceI orderProducerService;
+    OrderOperationsServiceI orderProducerService;
     OrderConsumerServiceI orderConsumerService;
 
-    public ExchangeService(UserServiceI userServiceI, OrderProducerServiceI orderServiceI, OrderConsumerServiceI orderConsumerService) {
+    public ExchangeController(UserServiceI userServiceI, OrderOperationsServiceI orderServiceI, OrderConsumerServiceI orderConsumerService) {
         this.userService = userServiceI;
         this.orderProducerService = orderServiceI;
         this.orderConsumerService = orderConsumerService;

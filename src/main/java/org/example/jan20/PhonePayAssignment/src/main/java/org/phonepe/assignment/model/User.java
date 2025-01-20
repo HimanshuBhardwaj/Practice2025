@@ -1,4 +1,4 @@
-package org.phonepay.assignment.model;
+package org.phonepe.assignment.model;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

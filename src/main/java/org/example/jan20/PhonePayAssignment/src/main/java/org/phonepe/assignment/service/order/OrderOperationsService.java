@@ -1,26 +1,21 @@
-package org.phonepay.assignment.service.order;
+package org.phonepe.assignment.service.order;
 
-import org.phonepay.assignment.model.Order;
-import org.phonepay.assignment.model.OrderStatus;
+import org.phonepe.assignment.dao.OrdersDataBaseI;
+import org.phonepe.assignment.model.Order;
+import org.phonepe.assignment.model.OrderStatus;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.TreeSet;
 import java.util.UUID;
 
 /*
 Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
-public class OrderProducerService implements OrderProducerServiceI {
+public class OrderOperationsService implements OrderOperationsServiceI {
 
-    OrdersDataBase ordersDataBase;
+    OrdersDataBaseI ordersDataBase;
 
-    public OrderProducerService() {
-        LinkedList<Order> ordersQueued = new LinkedList<>();
-        TreeSet<Order> ordersExecuted = new TreeSet<>();
-        TreeSet<Order> ordersInQueue = new TreeSet<>();
-         this.ordersDataBase = new OrdersDataBase(ordersQueued,ordersExecuted,ordersInQueue);
+    public OrderOperationsService(OrdersDataBaseI ordersDataBase) {
+         this.ordersDataBase = ordersDataBase;
     }
 
     @Override

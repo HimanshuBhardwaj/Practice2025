@@ -1,38 +1,48 @@
-package org.phonepay.assignment.service.order;
+package org.phonepe.assignment.service.order;
 
-import org.phonepay.assignment.model.Order;
-import org.phonepay.assignment.model.OrderStatus;
-import org.phonepay.assignment.model.StockSymbol;
-
-import java.util.ArrayList;
+import org.phonepe.assignment.dao.OrdersDataBaseI;
+import org.phonepe.assignment.model.Order;
+import org.phonepe.assignment.model.OrderStatus;
+import org.phonepe.assignment.model.StockSymbol;
+import java.util.List;
 
 /*
 Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
 public class OrderConsumer implements Runnable{
-    private final OrdersDataBase ordersDB;
+    private final OrdersDataBaseI ordersDB;
 
-    public OrderConsumer(OrdersDataBase ordersDataBase) {
+    public OrderConsumer(OrdersDataBaseI ordersDataBase) {
         this.ordersDB = ordersDataBase;
     }
 
     @Override
     public void run() {
+
         while (!Thread.currentThread().isInterrupted()) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("StockDatabaseDump: ");
+            ordersDB.printDB();
+
             synchronized (ordersDB) {
                 for (StockSymbol stockSymbol: ordersDB.getAllStockSymbol()) {
-                    ArrayList<Order> sellOrders = ordersDB.getSellOrders(stockSymbol);
-                    ArrayList<Order> buyOrders = ordersDB.getBuyOrders(stockSymbol);
-
+                    List<Order> sellOrders = ordersDB.getSellOrders(stockSymbol);
                     // Assumption: Only Supporting exact quantity to match. But in future this could be extended to non-matching quantity also.
                     for (Order sellOrder: sellOrders) {
+                        List<Order> buyOrders = ordersDB.getBuyOrders(stockSymbol);
                         for (Order buyOrder: buyOrders) {
                             if (buyOrder.getOrderStatus() != OrderStatus.COMPLETED
                                     && sellOrder.getPrice()<=buyOrder.getPrice()
                                     && sellOrder.getQuantity()==buyOrder.getQuantity()) {
                                 ordersDB.executeOrders(buyOrder);
                                 ordersDB.executeOrders(sellOrder);
+                                break;
                             }
                         }
                     }

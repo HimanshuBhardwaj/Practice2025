@@ -1,4 +1,4 @@
-package org.phonepay.assignment.exception;
+package org.phonepe.assignment.exception;
 
 public class InvalidUser extends RuntimeException {
     public InvalidUser(String message) {

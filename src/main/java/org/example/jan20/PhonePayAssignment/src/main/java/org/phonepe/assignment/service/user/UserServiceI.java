@@ -1,4 +1,4 @@
-package org.phonepay.assignment.service.user;
+package org.phonepe.assignment.service.user;
 
 import java.util.UUID;
 

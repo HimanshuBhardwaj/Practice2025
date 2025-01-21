@@ -42,13 +42,13 @@ public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
     }
 
     @Override
-    public List<Order> getSellOrders(StockSymbol stockSymbol) {
-        return getOrderByType(stockSymbol,OrderType.SELL);
+    public List<Order> getAcceptedSellOrders(StockSymbol stockSymbol) {
+        return getOrderByType(stockSymbol,OrderType.SELL, OrderStatus.ACCEPTED);
     }
 
     @Override
-    public List<Order> getBuyOrders(StockSymbol stockSymbol) {
-        return getOrderByType(stockSymbol,OrderType.BUY);
+    public List<Order> getAcceptedBuyOrders(StockSymbol stockSymbol) {
+        return getOrderByType(stockSymbol,OrderType.BUY, OrderStatus.ACCEPTED);
     }
 
     @Override
@@ -110,18 +110,18 @@ public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
         };
     }
 
-    private List<Order> getOrderByType(StockSymbol stockSymbol, OrderType orderType) {
-        ArrayList<Order> sellOrders = new ArrayList<>();
+    private List<Order> getOrderByType(StockSymbol stockSymbol, OrderType orderType, OrderStatus orderStatus) {
+        ArrayList<Order> orders = new ArrayList<>();
 
         for (Order order: unExecutedOrders.get(stockSymbol)) {
-            if (order.getOrderType()==orderType) {
-                sellOrders.add(order);
+            if (order.getOrderType()==orderType && order.getOrderStatus() == orderStatus) {
+                orders.add(order);
             }
         }
 
-        sellOrders.sort(getOrderSortByTimeComparator());
+        orders.sort(getOrderSortByTimeComparator());
 
-        return sellOrders;
+        return orders;
     }
 
 }

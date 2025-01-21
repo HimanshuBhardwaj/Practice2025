@@ -22,6 +22,63 @@ public class OrderExecuter implements Runnable{
     @SneakyThrows
     @Override
     public void run() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        while (!Thread.currentThread().isInterrupted()) {
+            processOrders();
+        }
+    }
+
+    private void processOrders() {
+        synchronized (ordersDB) {
+            for (StockSymbol stockSymbol : ordersDB.getAllStockSymbol()) {
+                List<Order> sellOrders = ordersDB.getAcceptedSellOrders(stockSymbol);
+                for (Order sellOrder : sellOrders) {
+                    if (sellOrder.getOrderStatus() == OrderStatus.ACCEPTED) {
+                        matchOrders(stockSymbol, sellOrder);
+                    }
+                }
+            }
+        }
+    }
+
+    private void matchOrders(StockSymbol stockSymbol, Order sellOrder) {
+        List<Order> buyOrders = ordersDB.getAcceptedBuyOrders(stockSymbol);
+        for (Order buyOrder : buyOrders) {
+            if (canMatchOrders(sellOrder, buyOrder)) {
+                executeTrade(sellOrder, buyOrder);
+                break;
+            }
+        }
+    }
+
+    private boolean canMatchOrders(Order sellOrder, Order buyOrder) {
+        return buyOrder.getOrderStatus() == OrderStatus.ACCEPTED &&
+                sellOrder.getPrice() <= buyOrder.getPrice() &&
+                sellOrder.getQuantity() == buyOrder.getQuantity();
+    }
+
+
+    private void executeTrade(Order sellOrder, Order buyOrder) {
+        ordersDB.createOrderTrade(UUID.randomUUID(),
+                buyOrder.getUserId(),
+                sellOrder.getUserId(),
+                buyOrder.getStockSymbol(),
+                buyOrder.getQuantity(),
+                buyOrder.getPrice(),
+                System.currentTimeMillis());
+        ordersDB.executeOrders(buyOrder);
+        ordersDB.executeOrders(sellOrder);
+    }
+
+    /*@SneakyThrows
+    @Override
+    public void run() {
         Thread.sleep(1000);
 
         while (!Thread.currentThread().isInterrupted()) {
@@ -46,5 +103,5 @@ public class OrderExecuter implements Runnable{
                 }
             }
         }
-    }
+    }*/
 }

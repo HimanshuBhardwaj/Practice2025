@@ -12,8 +12,8 @@ Date: 20-01-2025
 public interface OrdersDataBaseI {
     void addOrder(Order order);
     void executeOrders(Order order);
-    List<Order> getBuyOrders(StockSymbol stockSymbol);
-    List<Order> getSellOrders(StockSymbol stockSymbol);
+    List<Order> getAcceptedBuyOrders(StockSymbol stockSymbol);
+    List<Order> getAcceptedSellOrders(StockSymbol stockSymbol);
     List<StockSymbol> getAllStockSymbol();
     Order getOrder(UUID orderID);
     void logDBSummary();

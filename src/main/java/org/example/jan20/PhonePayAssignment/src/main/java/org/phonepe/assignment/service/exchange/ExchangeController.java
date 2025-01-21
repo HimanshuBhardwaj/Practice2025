@@ -3,7 +3,7 @@ package org.phonepe.assignment.service.exchange;
 import org.phonepe.assignment.exception.InvalidUser;
 import org.phonepe.assignment.exception.OrderAccessDeniedException;
 import org.phonepe.assignment.model.Order;
-import org.phonepe.assignment.service.order.OrderConsumerServiceI;
+import org.phonepe.assignment.service.order.OrderExecutionServiceI;
 import org.phonepe.assignment.service.order.OrderOperationsServiceI;
 import org.phonepe.assignment.service.user.UserServiceI;
 import java.util.UUID;
@@ -18,7 +18,7 @@ public class ExchangeController implements ExchangeControllerI {
     private final UserServiceI userService;
     private final OrderOperationsServiceI orderOperationsService;
 
-    public ExchangeController(UserServiceI userServiceI, OrderOperationsServiceI orderServiceI, OrderConsumerServiceI orderConsumerService) {
+    public ExchangeController(UserServiceI userServiceI, OrderOperationsServiceI orderServiceI, OrderExecutionServiceI orderConsumerService) {
         this.userService = userServiceI;
         this.orderOperationsService = orderServiceI;
         orderConsumerService.executeOrders();

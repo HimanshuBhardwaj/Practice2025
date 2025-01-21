@@ -21,9 +21,9 @@ Date: 20-01-2025
 @Slf4j
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        stockBuyAndSell_Success();
+        // stockBuyAndSell_Success();
         //stockCancelOrder_Success();
-        //stockModifyOrder_Success();
+         stockModifyOrder_Success();
     }
 
     static void stockModifyOrder_Success() {
@@ -60,8 +60,8 @@ public class Main {
         UserServiceI userService = new UserService();
         OrdersDataBaseI ordersDataBase = new InMemoryOrdersDBRepo();
         OrderOperationsServiceI orderOperationsService = new OrderOperationsService(ordersDataBase);
-        OrderConsumerServiceI orderConsumerService = new OrderConsumerService(ordersDataBase);
-         return new ExchangeController(userService, orderOperationsService, orderConsumerService);
+        OrderExecutionServiceI orderExecutionService = new OrderExecutionService(ordersDataBase);
+         return new ExchangeController(userService, orderOperationsService, orderExecutionService);
     }
 
     private static void printOrderStatus(ExchangeControllerI exchangeService) {

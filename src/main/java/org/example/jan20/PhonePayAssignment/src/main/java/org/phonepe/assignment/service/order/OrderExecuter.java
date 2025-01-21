@@ -12,20 +12,21 @@ import java.util.UUID;
 Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
-public class OrderConsumer implements Runnable{
+public class OrderExecuter implements Runnable{
     private final OrdersDataBaseI ordersDB;
 
-    public OrderConsumer(OrdersDataBaseI ordersDataBase) {
+    public OrderExecuter(OrdersDataBaseI ordersDataBase) {
         this.ordersDB = ordersDataBase;
     }
 
     @SneakyThrows
     @Override
     public void run() {
+        Thread.sleep(1000);
 
         while (!Thread.currentThread().isInterrupted()) {
-            addExecutionLag();
             synchronized (ordersDB) {
+                //TODO: Remove it
                 for (StockSymbol stockSymbol: ordersDB.getAllStockSymbol()) {
                     List<Order> sellOrders = ordersDB.getSellOrders(stockSymbol);
                     // Assumption: Only Supporting exact quantity to match. But in future this could be extended to non-matching quantity also.
@@ -45,9 +46,5 @@ public class OrderConsumer implements Runnable{
                 }
             }
         }
-    }
-
-    private void addExecutionLag() throws InterruptedException {
-        Thread.sleep(2000);
     }
 }

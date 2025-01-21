@@ -1,6 +1,7 @@
 package org.phonepe.assignment.model;
 
 import lombok.*;
+import org.phonepe.assignment.exception.InternalServerError;
 
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ Date: 20-01-2025
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Order implements Comparable<Order>{
+public class Order implements Comparable<Order>, Cloneable{
     @NonNull
     UUID orderId;
     @NonNull
@@ -39,5 +40,14 @@ public class Order implements Comparable<Order>{
     @Override
     public int compareTo(Order o) {
         return this.orderId.compareTo(o.orderId);
+    }
+
+    @Override
+    public Order clone() {
+        try {
+            return (Order) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalServerError(e.getMessage());
+        }
     }
 }

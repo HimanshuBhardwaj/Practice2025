@@ -1,10 +1,12 @@
 package org.phonepe.assignment.service.order;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.phonepe.assignment.dao.OrdersDataBaseI;
 import org.phonepe.assignment.model.Order;
 import org.phonepe.assignment.model.OrderStatus;
 import org.phonepe.assignment.model.StockSymbol;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -12,12 +14,9 @@ import java.util.UUID;
 Name: Himanshu Bhardwaj
 Date: 20-01-2025
 */
-public class OrderExecuter implements Runnable{
+@AllArgsConstructor
+public class OrderExecuter implements Runnable {
     private final OrdersDataBaseI ordersDB;
-
-    public OrderExecuter(OrdersDataBaseI ordersDataBase) {
-        this.ordersDB = ordersDataBase;
-    }
 
     @SneakyThrows
     @Override
@@ -39,9 +38,7 @@ public class OrderExecuter implements Runnable{
             for (StockSymbol stockSymbol : ordersDB.getAllStockSymbol()) {
                 List<Order> sellOrders = ordersDB.getAcceptedSellOrders(stockSymbol);
                 for (Order sellOrder : sellOrders) {
-                    if (sellOrder.getOrderStatus() == OrderStatus.ACCEPTED) {
-                        matchOrders(stockSymbol, sellOrder);
-                    }
+                    matchOrders(stockSymbol, sellOrder);
                 }
             }
         }
@@ -58,8 +55,7 @@ public class OrderExecuter implements Runnable{
     }
 
     private boolean canMatchOrders(Order sellOrder, Order buyOrder) {
-        return buyOrder.getOrderStatus() == OrderStatus.ACCEPTED &&
-                sellOrder.getPrice() <= buyOrder.getPrice() &&
+        return sellOrder.getPrice() <= buyOrder.getPrice() &&
                 sellOrder.getQuantity() == buyOrder.getQuantity();
     }
 

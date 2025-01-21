@@ -37,7 +37,7 @@ public class ExchangeController implements ExchangeControllerI {
         Order order = orderOperationsService.orderStatus(orderID);
 
         if (order!= null && order.getUserId().equals(userID)) {
-            return order;
+            return order.clone();
         } else {
             throw new OrderAccessDeniedException("User is not allowed to access this order");
         }

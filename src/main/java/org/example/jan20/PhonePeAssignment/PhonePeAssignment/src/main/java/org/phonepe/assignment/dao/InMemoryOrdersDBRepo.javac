@@ -58,6 +58,23 @@ public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
     }
 
     @Override
+    public void deleteOrder(Order order) {
+        allOrders.remove(order.getOrderId());
+        cancelOrderExecution(order);
+    }
+
+    @Override
+    public void cancelOrderExecution(Order order) {
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        unExecutedOrders.get(order.getStockSymbol()).remove(order);
+    }
+
+    @Override
+    public void createOrderTrade(UUID tradeId, @NonNull UUID buyerId, @NonNull UUID sellerId, StockSymbol stockSymbol, double quantity, double price, long tradeTimeStamp) {
+        this.trades.add(new Trades(tradeId,null, buyerId, sellerId,stockSymbol,quantity,price,tradeTimeStamp));
+    }
+
+    @Override
     public void logDBSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("StockDatabaseDump:\n");
@@ -76,23 +93,6 @@ public class InMemoryOrdersDBRepo implements OrdersDataBaseI {
 
         sb.append(String.format("\tTrades: %d",trades.size())) ;
         log.info(sb.toString());
-    }
-
-    @Override
-    public void deleteOrder(Order order) {
-        allOrders.remove(order.getOrderId());
-        cancelOrderExecution(order);
-    }
-
-    @Override
-    public void cancelOrderExecution(Order order) {
-        order.setOrderStatus(OrderStatus.CANCELLED);
-        unExecutedOrders.get(order.getStockSymbol()).remove(order);
-    }
-
-    @Override
-    public void createOrderTrade(UUID tradeId, @NonNull UUID buyerId, @NonNull UUID sellerId, StockSymbol stockSymbol, double quantity, double price, long tradeTimeStamp) {
-        this.trades.add(new Trades(tradeId,null, buyerId, sellerId,stockSymbol,quantity,price,tradeTimeStamp));
     }
 
     private void addStockSymbol(StockSymbol stockSymbol) {

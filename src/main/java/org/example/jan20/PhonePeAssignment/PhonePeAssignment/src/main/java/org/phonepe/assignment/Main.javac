@@ -22,10 +22,10 @@ Date: 20-01-2025
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         Main main = new Main();
-        main.stockBuyAndSellModifiedAndCandCancelledOrder_Success();
-        //main.stockBuyAndSell_Success();
-        //main.stockCancelOrder_Success();
-        //main.stockModifyOrder_Success();
+        main.stockBuyAndSellModifiedAndCancelledOrder_Success();
+        // main.stockBuyAndSell_Success();
+        // main.stockCancelOrder_Success();
+        // main.stockModifyOrder_Success();
     }
 
     void stockModifyOrder_Success() {
@@ -50,7 +50,7 @@ public class Main {
         printOrderStatus(exchangeService);
     }
 
-    void stockBuyAndSellModifiedAndCandCancelledOrder_Success() throws InterruptedException {
+    void stockBuyAndSellModifiedAndCancelledOrder_Success() throws InterruptedException {
         ExchangeControllerI exchangeController = getExchangeController();
         placeBulkOrder(exchangeController);
 
@@ -64,7 +64,7 @@ public class Main {
         exchangeController.modifyOrder(order);
 
         order = exchangeController.orderStatus(UUID.fromString("c9d30604-9400-4b2b-a4cd-1b4fd8436c60"), UUID.fromString("d9d30604-9400-4b2b-a4cd-1b4fd8436c61"));
-        order.setPrice(12);
+        order.setPrice(5);
         order.setOrderType(OrderType.BUY);
 
         exchangeController.modifyOrder(order);
@@ -72,9 +72,8 @@ public class Main {
         exchangeController.cancelOrder(UUID.fromString("d9d30604-9400-4b2b-a4cd-1b4fd8436c62"),UUID.fromString("c9d30604-9400-4b2b-a4cd-1b4fd8436c60"));
         exchangeController.cancelOrder(UUID.fromString("d9d30604-9400-4b2b-a4cd-1b4fd8436c63"),UUID.fromString("c9d30604-9400-4b2b-a4cd-1b4fd8436c60"));
 
-        printOrderStatus(exchangeController);
         Thread.sleep(5000);
-        //exchangeController.logDBState();
+        printOrderStatus(exchangeController);
         log.info("Printing order status after all operations");
         printOrderStatus(exchangeController);
         exchangeController.logDBState();

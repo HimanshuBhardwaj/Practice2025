@@ -1,4 +1,4 @@
-package org.example.jan01;
+package org.example.jan2025.jan01;
 
 public class HelloWorld {
     public static void main(String[] args) {

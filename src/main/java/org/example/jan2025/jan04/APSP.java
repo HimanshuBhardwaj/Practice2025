@@ -1,4 +1,4 @@
-package org.example.jan04;
+package org.example.jan2025.jan04;
 
 public class APSP {
     public static void main(String[] args) {

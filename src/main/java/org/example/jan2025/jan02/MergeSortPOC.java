@@ -1,4 +1,4 @@
-package org.example.jan02;
+package org.example.jan2025.jan02;
 
 public class MergeSortPOC {
     public static void main(String[] args) {

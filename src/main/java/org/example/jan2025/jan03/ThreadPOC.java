@@ -1,4 +1,4 @@
-package org.example.jan03;
+package org.example.jan2025.jan03;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;

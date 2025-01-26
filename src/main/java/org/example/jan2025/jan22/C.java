@@ -1,4 +1,4 @@
-package org.example.jan22;
+package org.example.jan2025.jan22;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.example.jan03;
+package org.example.jan2025.jan03;
 
 public class GenericBinaryTreeOperations {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package org.example.jan2025.jan26;
+package org.example.april13;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 /*
 Name: Himanshu Bhardwaj
-Date: 26-01-2025
+Date: 13-04-2025
 */
 public class A {
     public static void main(String[] args) throws IOException {
@@ -16,17 +16,9 @@ public class A {
         PrintWriter pw = new PrintWriter(System.out);
 
         while (t-- > 0) {
-            String str = br.readLine();
-            int count=0;
-
-            for (char c:str.toCharArray()) {
-                count+= c-'0';
-            }
-
-            pw.append(count+"\n");
+            String [] str = br.readLine().split(" ");
+            pw.append(str[0].charAt(0)).append(str[1].charAt(0)).append(str[2].charAt(0)).append("\n");
         }
-
-
 
         pw.flush();
         pw.close();

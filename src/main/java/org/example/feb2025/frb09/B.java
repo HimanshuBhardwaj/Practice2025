@@ -1,15 +1,16 @@
-package org.example.jan2025.jan26;
+package org.example.feb2025.frb09;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.TreeSet;
 
 /*
 Name: Himanshu Bhardwaj
-Date: 26-01-2025
+Date: 09-02-2025
 */
-public class A {
+public class B {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine());
@@ -17,18 +18,23 @@ public class A {
 
         while (t-- > 0) {
             String str = br.readLine();
-            int count=0;
-
-            for (char c:str.toCharArray()) {
-                count+= c-'0';
-            }
-
-            pw.append(count+"\n");
+            pw.append(minimumString(str)+"\n");
         }
-
-
 
         pw.flush();
         pw.close();
+    }
+
+    private static int minimumString(String str) {
+
+        char prevC = '1';
+        for (char c: str.toCharArray()) {
+            if (c==prevC) {
+                return 1;
+            }
+            prevC = c;
+        }
+
+        return str.length();
     }
 }
